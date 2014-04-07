@@ -3,6 +3,8 @@
 Native ruby implementation of RRD format parsing.
 Don't need all these pesky C libraries.
 
+Doesn't include any update functionality, so you still have to use ```rrdtool``` to update your data.
+
 ## Installation
 
 Add this line to your application's Gemfile:
