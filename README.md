@@ -1,6 +1,7 @@
 # RRD::Ruby
 
-TODO: Write a gem description
+Native ruby implementation of RRD format parsing.
+Don't need all these pesky C libraries.
 
 ## Installation
 
@@ -18,16 +19,15 @@ Or install it yourself as:
 
 ## Usage
 
-```
+```ruby
 require 'rrd'
-
 
 file = RRD::File.new("path/to/my_awesome.rrd")
 
-# Get all Round Robin Archive info
+# Get all Round Robin Archive infos
 rra = file.rra
 
-# Get all datasources
+# Get all DataSource infos
 ds = file.datasources
 
 # Get all data from RRA in specified time interval
@@ -41,9 +41,10 @@ data = file.data(rra.first).fetch do |row, columns|
 	# turn em into hash
 	Hash[columns.zip(row)] # => { time: 123345345, col1: 123.0, col2: 456.0, col3: 789.0 }
 end
+# => [... , { time: 123345345, col1: 123.0, col2: 456.0, col3: 789.0 }, ...]
 
-# result would be 
-# [... , { time: 123345345, col1: 123.0, col2: 456.0, col3: 789.0 }, ...]
+# All data read from file stream, right on spot
+file.close
 ```
 
 ## Contributing
