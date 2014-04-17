@@ -12,11 +12,19 @@ module RRD
       header.setup_reader(reader) # update endianess and alignment
     end
 
+    def first_update
+      @start_time = last_update - (rra.rows * step_time)
+    end
+
     def last_update
       @last_update ||= round_time(header.last_update.to_i)
     end
 
-    def last_row
+    def step_time
+      @step_time ||= header.step * rra.pdpr
+    end
+
+    def fetch_last
       reader.seek(base_position + rra.current_row * row_size)
 
       [last_update] + reader.read(row_size, unpack_formula)
@@ -26,11 +34,7 @@ module RRD
       row = options[:start_row] || 0
       rows = [options[:rows] || rra.rows, rra.rows].min
 
-      head = 
-
-      last_update = round_time(header.last_update.to_i)
-      current_time = last_update - (rra.rows * step_time)
-
+      current_time = first_update
       columns = [:time] + header.datasources.map(&:name).map(&:to_sym)
 
       if options[:start_time]
@@ -91,10 +95,6 @@ module RRD
 
     def base_position
       @base_position ||= data_start + rra.data_pointer
-    end
-
-    def step_time
-      @step_time ||= header.step * rra.pdpr
     end
 
     def row_size
